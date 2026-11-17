@@ -1,3 +1,10 @@
+import org.apache.commons.codec.digest.MurmurHash3;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
 
 public class HashApp {
@@ -20,9 +27,30 @@ public class HashApp {
                 if(str.isBlank()){
                     continue;
                 }
-                System.out.println(str);
+
+                int bucket = findBucketNumber(str, n);
+                String fileName = bucket + ".txt";
+                try {
+                    appendToFile(fileName, str);
+                    System.out.println(str + " added to " + fileName);
+                } catch (IOException e) {
+                    System.err.println("Could not write to " + fileName + ": " + e.getMessage());
+                }
             }
         }
 
+    }
+
+    private static int findBucketNumber(String text, int divisor) {
+        int hash = MurmurHash3.hash32x86(text.getBytes(StandardCharsets.UTF_8));
+
+        int remainder = Integer.remainderUnsigned(hash, divisor);
+        if(remainder == 0) remainder = divisor;
+        return remainder;
+    }
+
+    private static void appendToFile(String fileName, String text) throws IOException {
+        Files.writeString(Path.of(fileName), text,
+                StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     }
 }

@@ -1,2 +1,4 @@
 .idea/
 out/
+build/
+/[0-9]*.txt
