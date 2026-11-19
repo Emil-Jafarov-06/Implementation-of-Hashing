@@ -1,0 +1,4 @@
+#!/bin/bash
+# Usage: ./hash_app <n> <s>
+DIR="$(dirname "$0")"
+java -cp "$DIR/lib/commons-codec-1.23.0.jar" "$DIR/HashApp.java" "$@"
